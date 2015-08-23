@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.jadira.usertype:usertype.core:3.1.0.CR8">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../.m2/repository/org/jadira/usertype/usertype.core/3.1.0.CR8/usertype.core-3.1.0.CR8.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../.m2/repository/org/jadira/usertype/usertype.core/3.1.0.CR8/usertype.core-3.1.0.CR8-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../.m2/repository/org/jadira/usertype/usertype.core/3.1.0.CR8/usertype.core-3.1.0.CR8-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

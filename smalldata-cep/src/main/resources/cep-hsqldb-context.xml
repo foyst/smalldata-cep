@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="hikariConfig" />
+    </bean>
+
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="poolName" value="springHikariCP" />
+        <property name="dataSourceClassName" value="org.hsqldb.jdbc.JDBCDataSource" />
+        <property name="maximumPoolSize" value="50" />
+        <property name="idleTimeout" value="10" />
+        <property name="connectionTimeout" value="10000" />
+        <property name="leakDetectionThreshold" value="0" />
+
+        <property name="dataSourceProperties">
+            <props>
+                <prop key="url">jdbc:hsqldb:mem:smalldata-cep;hsqldb.tx=mvcc;sql.syntax_mys=true</prop>
+                <prop key="user">smalldata</prop>
+                <prop key="password">smalldata</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="dataSourceSpecificJpaProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean" />
+
+</beans>
