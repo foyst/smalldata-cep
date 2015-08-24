@@ -1,41 +1,32 @@
 package uk.co.foyst.smalldata.cep.api;
 
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.stereotype.Component;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
 
-public class CORSFilter extends OncePerRequestFilter {
-
-    private Properties prop = new Properties();
+@Component
+public class CORSFilter implements Filter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        InputStream in = getClass().getResourceAsStream("/META-INF/app.properties");
-        prop.load(in);
-        in.close();
+    public void init(FilterConfig arg0) throws ServletException {}
 
-        Set<String> allowedOrigins = new HashSet<String>(Arrays.asList(prop.getProperty("allowed.origins").split(",")));
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse resp,
+                         FilterChain chain) throws IOException, ServletException {
 
-        if(request.getHeader("Access-Control-Request-Method") != null && "OPTIONS".equals(request.getMethod())) {
-            String originHeader = request.getHeader("Origin");
+        HttpServletResponse response=(HttpServletResponse) resp;
 
-            if(allowedOrigins.contains(request.getHeader("Origin")))
-                response.addHeader("Access-Control-Allow-Origin", originHeader);
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
 
-            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-            response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-            response.addHeader("Access-Control-Max-Age", "1800");
-        }
-
-        filterChain.doFilter(request, response);
+        chain.doFilter(req, resp);
     }
+
+    @Override
+    public void destroy() {}
+
 }
