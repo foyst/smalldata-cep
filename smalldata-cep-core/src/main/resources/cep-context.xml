@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="uk.co.foyst.smalldata.cep" />
+    <jpa:repositories base-package="uk.co.foyst.smalldata.cep.dao" entity-manager-factory-ref="entityManagerFactory"
+                      transaction-manager-ref="transactionManager" />
+
+    <context:annotation-config />
+    <tx:annotation-driven />
+
+    <bean id="siddhiConfiguration" class="org.wso2.siddhi.core.config.SiddhiConfiguration" >
+        <property name="asyncProcessing" value="true"/>
+    </bean>
+
+    <bean class="org.wso2.siddhi.core.SiddhiManager">
+        <constructor-arg ref="siddhiConfiguration"/>
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="persistenceUnit" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="packagesToScan">
+            <list>
+                <value>uk.co.foyst.smalldata.cep.dao</value>
+            </list>
+        </property>
+        <property name="jpaPropertyMap">
+            <map>
+                <entry key="hibernate.hbm2ddl.auto" value="update" />
+                <entry key="jadira.usertype.autoRegisterUserTypes" value="true" />
+            </map>
+        </property>
+        <property name="jpaProperties" ref="dataSourceSpecificJpaProperties" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+
+    <beans profile="cep.persistent.hsqldb">
+        <import resource="cep-hsqldb-context.xml" />
+    </beans>
+
+</beans>
