@@ -13,7 +13,7 @@ public class ScenarioDtoFactory {
     public ScenarioDto build(final Scenario scenario) {
 
         return new ScenarioDto(scenario.getScenarioId().toString(), scenario.getName(), scenario.getDefinition(), scenario.getDescription(),
-                scenario.getCreatedAt(), scenario.getUpdatedAt(), scenario.getUpdatedBy());
+                scenario.getCreatedAt(), scenario.getUpdatedAt());
     }
 
     public List<ScenarioDto> build(final List<Scenario> scenarios) {
@@ -32,7 +32,7 @@ public class ScenarioDtoFactory {
         final ScenarioId scenarioId = ScenarioId.fromString(dto.getScenarioId());
 
         return new Scenario(scenarioId, dto.getName(), dto.getDefinition(), dto.getDescription(), dto.getCreatedAt(),
-                dto.getUpdatedAt(), dto.getUpdatedBy());
+                dto.getUpdatedAt());
     }
 
     public List<Scenario> convertToScenario(final List<ScenarioDto> dtos) throws Exception {

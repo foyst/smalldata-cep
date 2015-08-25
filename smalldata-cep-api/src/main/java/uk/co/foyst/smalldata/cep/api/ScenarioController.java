@@ -65,8 +65,9 @@ public class ScenarioController {
 
         log.info("add: scenarioDto={}", scenarioDto);
 
+        scenarioDto.setCreatedAt(new DateTime());
         scenarioDto.setUpdatedAt(new DateTime());
-        scenarioDto.setUpdatedBy("user"); // FIXME: get real user
+        scenarioDto.setScenarioId(new ScenarioId().toString());
 
         final Scenario scenario = scenarioDtoFactory.convertToScenario(scenarioDto);
         log.info("add: scenario={}", scenario);
@@ -94,7 +95,6 @@ public class ScenarioController {
         Assert.notNull(scenarioService.read(id), String.format(messageFormat, scenarioDto.getScenarioId()));
 
         scenarioDto.setUpdatedAt(new DateTime());
-        scenarioDto.setUpdatedBy("user"); // FIXME: get real user
 
         final Scenario scenario = scenarioDtoFactory.convertToScenario(scenarioDto);
 

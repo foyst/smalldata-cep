@@ -12,7 +12,7 @@ public class ScenarioViewFactory {
 
     public ScenarioView build(final Scenario scenario) throws Exception {
 
-        return new ScenarioView(scenario.getScenarioId().toString(), scenario.getName(), scenario.getDefinition(), scenario.getDescription(), scenario.getCreatedAt(), scenario.getUpdatedAt(), scenario.getUpdatedBy());
+        return new ScenarioView(scenario.getScenarioId().toString(), scenario.getName(), scenario.getDefinition(), scenario.getDescription(), scenario.getCreatedAt(), scenario.getUpdatedAt());
     }
 
     public List<ScenarioView> build(final List<Scenario> entities) throws Exception {
@@ -29,7 +29,7 @@ public class ScenarioViewFactory {
         final ScenarioId scenarioId = ScenarioId.fromString(view.getScenarioId());
 
         return new Scenario(scenarioId, view.getName(), view.getDefinition(), view.getDescription(), view.getCreatedAt(),
-                view.getUpdatedAt(), view.getUpdatedBy());
+                view.getUpdatedAt());
     }
 
     public List<Scenario> convertToDomainObject(final List<ScenarioView> views) throws Exception {

@@ -10,19 +10,17 @@ public class ScenarioDto {
     protected String description;
     protected DateTime createdAt;
     protected DateTime updatedAt;
-    protected String updatedBy;
 
     public ScenarioDto() {
     }
 
-    public ScenarioDto(String scenarioId, String name, String definition, String description, DateTime createdAt, DateTime updatedAt, String updatedBy) {
+    public ScenarioDto(String scenarioId, String name, String definition, String description, DateTime createdAt, DateTime updatedAt) {
         this.scenarioId = scenarioId;
         this.name = name;
         this.definition = definition;
         this.description = description;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.updatedBy = updatedBy;
     }
 
     public String getScenarioId() {
@@ -73,11 +71,4 @@ public class ScenarioDto {
         this.updatedAt = updatedAt;
     }
 
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
 }

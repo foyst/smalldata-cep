@@ -33,14 +33,11 @@ public class ScenarioView implements Serializable {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     protected DateTime updatedAt;
 
-    @Column(nullable = false)
-    protected String updatedBy;
-
     public ScenarioView() {
     }
 
     public ScenarioView(final String scenarioId, final String name, final String definition, final String description
-            , final DateTime createdAt, final DateTime updatedAt, final String updatedBy) {
+            , final DateTime createdAt, final DateTime updatedAt) {
 
         this.name = name;
         this.scenarioId = scenarioId;
@@ -48,7 +45,6 @@ public class ScenarioView implements Serializable {
         this.description = description;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.updatedBy = updatedBy;
     }
 
     public String getScenarioId() {
@@ -97,13 +93,5 @@ public class ScenarioView implements Serializable {
 
     public void setUpdatedAt(DateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
     }
 }

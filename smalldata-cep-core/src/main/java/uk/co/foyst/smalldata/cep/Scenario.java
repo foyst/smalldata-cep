@@ -10,16 +10,14 @@ public class Scenario {
     private String description;
     private DateTime createdAt;
     private DateTime updatedAt;
-    private String updatedBy;
 
-    public Scenario(ScenarioId scenarioId, String name, String definition, String description, DateTime createdAt, DateTime updatedAt, String updatedBy) {
+    public Scenario(ScenarioId scenarioId, String name, String definition, String description, DateTime createdAt, DateTime updatedAt) {
         this.scenarioId = scenarioId;
         this.name = name;
         this.definition = definition;
         this.description = description;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.updatedBy = updatedBy;
     }
 
     public ScenarioId getScenarioId() {
@@ -44,9 +42,5 @@ public class Scenario {
 
     public DateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
     }
 }
