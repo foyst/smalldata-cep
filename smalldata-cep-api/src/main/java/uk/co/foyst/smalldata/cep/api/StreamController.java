@@ -63,6 +63,7 @@ public class StreamController {
 
         log.info("add: streamDto={}", streamDto);
 
+        streamDto.setStreamId(new StreamId().toString());
         final Stream newStream = streamDtoFactory.convertToStream(streamDto);
 
         final Stream createdStream = streamService.add(newStream);
