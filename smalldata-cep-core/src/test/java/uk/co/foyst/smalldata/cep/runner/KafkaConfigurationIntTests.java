@@ -35,7 +35,7 @@ public class KafkaConfigurationIntTests {
         streamService.add(testStream);
 
         final EventConsumerId eventConsumerId = new EventConsumerId();
-        EventConsumerConfig kafkaConsumerConfig = new KafkaEventConsumerConfig(eventConsumerId, testStream, "localhost:8080", "foyst.smalldata", "radarEvents", 1);
+        EventConsumerConfig kafkaConsumerConfig = new KafkaEventConsumerConfig(eventConsumerId, testStream, "localhost:8080", "foyst.smalldata", "radarEvents");
 
         // Act
         cepEventConsumerManager.registerAndStart(kafkaConsumerConfig);

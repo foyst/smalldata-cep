@@ -52,7 +52,7 @@ public class AbstractEventConsumerConfigDtoFactory {
             }
 
         if (eventConsumerConfig == null)
-            throw new IllegalArgumentException("ViewFactory not found for Config Type: " + eventConsumerConfigDto.getConsumerType());
+            throw new IllegalArgumentException("DtoFactory not found for Config Type: " + eventConsumerConfigDto.getClass().getSimpleName());
 
         return eventConsumerConfig;
     }

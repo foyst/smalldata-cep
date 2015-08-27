@@ -48,7 +48,6 @@ public class KafkaEventConsumerConfigViewFactory implements EventConsumerConfigV
         kafkaConfigProperties.put(GROUP_ID_KEY, kafkaEventConsumerConfig.getGroupId());
         kafkaConfigProperties.put(TOPIC_KEY, kafkaEventConsumerConfig.getTopic());
         kafkaConfigProperties.put(ZOOKEEPER_URL_KEY, kafkaEventConsumerConfig.getZookeeperUrl());
-        kafkaConfigProperties.put(POOL_SIZE_KEY, kafkaEventConsumerConfig.getPoolSize().toString());
 
         return new EventConsumerConfigView(eventConsumerConfig.getEventConsumerId().toString(), streamView, KAFKA_CONSUMER_TYPE, kafkaConfigProperties);
     }
@@ -62,7 +61,6 @@ public class KafkaEventConsumerConfigViewFactory implements EventConsumerConfigV
         String zookeeperUrl = configProperties.get(ZOOKEEPER_URL_KEY);
         String groupId = configProperties.get(GROUP_ID_KEY);
         String topic = configProperties.get(TOPIC_KEY);
-        int poolSize = Integer.parseInt(configProperties.get(POOL_SIZE_KEY));
-        return new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic, poolSize);
+        return new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic);
     }
 }

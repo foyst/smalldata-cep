@@ -1,21 +1,19 @@
 package uk.co.foyst.smalldata.cep.api;
 
-import java.io.Serializable;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-public class EventConsumerConfigDto implements Serializable {
+import java.io.Serializable;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY, property = "consumerType")
+public abstract class EventConsumerConfigDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String eventConsumerId;
     private final String streamId;
-    private final String consumerType;
-    private final Map<String, String> configProperties;
 
-    public EventConsumerConfigDto(final String eventConsumerId, final String streamId, final String consumerType, final Map<String, String> configProperties) {
+    public EventConsumerConfigDto(final String eventConsumerId, final String streamId) {
         this.eventConsumerId = eventConsumerId;
         this.streamId = streamId;
-        this.consumerType = consumerType;
-        this.configProperties = configProperties;
     }
 
     public String getEventConsumerId() {
@@ -25,13 +23,4 @@ public class EventConsumerConfigDto implements Serializable {
     public String getStreamId() {
         return streamId;
     }
-
-    public String getConsumerType() {
-        return consumerType;
-    }
-
-    public Map<String, String> getConfigProperties() {
-        return configProperties;
-    }
-
 }

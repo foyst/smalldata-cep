@@ -17,7 +17,7 @@ import uk.co.foyst.smalldata.cep.service.EventConsumerService;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "/v1/eventConsumer")
+@RequestMapping(value = "/v1/eventConsumers")
 public class EventConsumerController {
 
     public static final String EVENT_CONSUMER_CREATION_ERROR_MESSAGE = "Event Consumer '%s' could not be created.";

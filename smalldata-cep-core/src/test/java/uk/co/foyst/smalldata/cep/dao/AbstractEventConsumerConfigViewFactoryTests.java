@@ -37,8 +37,7 @@ public class AbstractEventConsumerConfigViewFactoryTests {
         final String zookeeperUrl = "localhost:8080";
         final String groupId = "testGroup";
         final String topic = "testTopic";
-        final Integer poolSize = 5;
-        final EventConsumerConfig eventConsumerConfig = new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic, poolSize);
+        final EventConsumerConfig eventConsumerConfig = new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic);
 
         // Act
         final EventConsumerConfigView consumerConfigView = abstractEventConsumerConfigViewFactory.build(eventConsumerConfig);
@@ -53,7 +52,6 @@ public class AbstractEventConsumerConfigViewFactoryTests {
         assertEquals(zookeeperUrl, consumerConfigView.getConfigProperties().get("zookeeperUrl"));
         assertEquals(groupId, consumerConfigView.getConfigProperties().get("groupId"));
         assertEquals(topic, consumerConfigView.getConfigProperties().get("topic"));
-        assertEquals(poolSize.toString(), consumerConfigView.getConfigProperties().get("poolSize"));
     }
 
     @Test

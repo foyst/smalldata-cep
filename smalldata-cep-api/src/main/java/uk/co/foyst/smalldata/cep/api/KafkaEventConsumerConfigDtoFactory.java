@@ -9,9 +9,6 @@ import uk.co.foyst.smalldata.cep.consumer.EventConsumerId;
 import uk.co.foyst.smalldata.cep.consumer.KafkaEventConsumerConfig;
 import uk.co.foyst.smalldata.cep.service.StreamService;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Component
 public class KafkaEventConsumerConfigDtoFactory implements EventConsumerConfigDtoFactory {
 
@@ -37,7 +34,7 @@ public class KafkaEventConsumerConfigDtoFactory implements EventConsumerConfigDt
     @Override
     public boolean compatibleWith(EventConsumerConfigDto eventConsumerConfigDto) {
 
-        return eventConsumerConfigDto.getConsumerType().equals(KAFKA_CONSUMER_TYPE);
+        return eventConsumerConfigDto instanceof KafkaEventConsumerConfigDto;
     }
 
     @Override
@@ -45,13 +42,11 @@ public class KafkaEventConsumerConfigDtoFactory implements EventConsumerConfigDt
 
         final String streamId = eventConsumerConfig.getInputStream().getStreamId().toString();
         final KafkaEventConsumerConfig kafkaEventConsumerConfig = (KafkaEventConsumerConfig) eventConsumerConfig;
-        final Map<String, String> kafkaConfigProperties = new HashMap<>();
-        kafkaConfigProperties.put(GROUP_ID_KEY, kafkaEventConsumerConfig.getGroupId());
-        kafkaConfigProperties.put(TOPIC_KEY, kafkaEventConsumerConfig.getTopic());
-        kafkaConfigProperties.put(ZOOKEEPER_URL_KEY, kafkaEventConsumerConfig.getZookeeperUrl());
-        kafkaConfigProperties.put(POOL_SIZE_KEY, kafkaEventConsumerConfig.getPoolSize().toString());
+        final String groupId = kafkaEventConsumerConfig.getGroupId();
+        final String topic = kafkaEventConsumerConfig.getTopic();
+        final String zookeeperUrl = kafkaEventConsumerConfig.getZookeeperUrl();
 
-        return new EventConsumerConfigDto(eventConsumerConfig.getEventConsumerId().toString(), streamId, KAFKA_CONSUMER_TYPE, kafkaConfigProperties);
+        return new KafkaEventConsumerConfigDto(eventConsumerConfig.getEventConsumerId().toString(), streamId, zookeeperUrl, groupId, topic);
     }
 
     @Override
@@ -59,11 +54,11 @@ public class KafkaEventConsumerConfigDtoFactory implements EventConsumerConfigDt
 
         EventConsumerId eventConsumerId = EventConsumerId.fromString(eventConsumerConfigDto.getEventConsumerId());
         Stream inputStream = streamService.read(StreamId.fromString(eventConsumerConfigDto.getStreamId()));
-        final Map<String, String> configProperties = eventConsumerConfigDto.getConfigProperties();
-        String zookeeperUrl = configProperties.get(ZOOKEEPER_URL_KEY);
-        String groupId = configProperties.get(GROUP_ID_KEY);
-        String topic = configProperties.get(TOPIC_KEY);
-        int poolSize = Integer.parseInt(configProperties.get(POOL_SIZE_KEY));
-        return new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic, poolSize);
+        final KafkaEventConsumerConfigDto kafkaEventConsumerConfigDto = (KafkaEventConsumerConfigDto) eventConsumerConfigDto;
+        final String zookeeperUrl = kafkaEventConsumerConfigDto.getZookeeperUrl();
+        final String groupId = kafkaEventConsumerConfigDto.getGroupId();
+        final String topic = kafkaEventConsumerConfigDto.getTopic();
+
+        return new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic);
     }
 }

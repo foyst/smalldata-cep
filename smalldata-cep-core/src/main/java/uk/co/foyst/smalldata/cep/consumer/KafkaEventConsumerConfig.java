@@ -10,13 +10,13 @@ public class KafkaEventConsumerConfig extends EventConsumerConfig {
     private final String groupId;
 
     public KafkaEventConsumerConfig(final EventConsumerId eventConsumerId, final Stream inputStream, final String zookeeperUrl, final String groupId,
-                                    final String topic, final int poolSize) {
+                                    final String topic) {
 
         super(eventConsumerId, inputStream);
         this.zookeeperUrl = zookeeperUrl;
         this.groupId = groupId;
         this.topic = topic;
-        this.poolSize = poolSize;
+        this.poolSize = 5; //Fixed, for now
     }
 
     public String getTopic() {
