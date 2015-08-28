@@ -14,6 +14,7 @@
     <properties>
         <spring-hateoas.version>0.4.0.RELEASE</spring-hateoas.version>
         <jetty.version>9.0.0.M5</jetty.version>
+        <reflections.version>0.9.10</reflections.version>
     </properties>
 
     <dependencies>
@@ -43,6 +44,12 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
             <version>${jetty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>${reflections.version}</version>
         </dependency>
     </dependencies>
 
