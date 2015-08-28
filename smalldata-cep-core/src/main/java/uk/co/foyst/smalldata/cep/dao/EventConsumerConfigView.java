@@ -12,18 +12,20 @@ public class EventConsumerConfigView implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private final String eventConsumerId;
+    private String eventConsumerId;
 
-    private final StreamView streamView;
+    private StreamView streamView;
     // TODO: Make me an enum
-    private final String consumerType;
+    private String consumerType;
+
+    public EventConsumerConfigView(){}
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Fetch(FetchMode.JOIN)
     @CollectionTable(name = "EventConsumerConfigView_Props")
     @MapKeyColumn(name = "propertyName")
     @Column(name = "propertyValue", length = 1000)
-    private final Map<String, String> configProperties;
+    private Map<String, String> configProperties;
 
     public EventConsumerConfigView(String eventConsumerId, StreamView streamView, String consumerType, Map<String, String> configProperties) {
         this.eventConsumerId = eventConsumerId;

@@ -34,7 +34,7 @@ public class EventConsumerController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public final ResponseEntity<List<EventConsumerConfigDto>> get() throws Exception {
+    public final ResponseEntity<EventConsumerConfigDtoArrayList> get() throws Exception {
 
         final String messageFormat = "No Event Consumer Configurations found.";
         final List<EventConsumerConfig> existingEventConsumerConfigs = eventConsumerService.readAll();
@@ -43,7 +43,7 @@ public class EventConsumerController {
 
         final List<EventConsumerConfigDto> eventConsumerConfigDtos = abstractEventConsumerConfigDtoFactory.build(existingEventConsumerConfigs);
 
-        return new ResponseEntity<>(eventConsumerConfigDtos, HttpStatus.OK);
+        return new ResponseEntity<>(new EventConsumerConfigDtoArrayList(eventConsumerConfigDtos), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{key}", method = RequestMethod.GET)
@@ -61,6 +61,7 @@ public class EventConsumerController {
     public final ResponseEntity<Void> create(@RequestBody final EventConsumerConfigDto eventConsumerConfigDto) throws Exception {
 
         log.info("add: eventConsumerConfigDto={}", eventConsumerConfigDto);
+        eventConsumerConfigDto.setEventConsumerId(new EventConsumerId().toString());
 
         final EventConsumerConfig eventConsumerConfig = abstractEventConsumerConfigDtoFactory.convertToEventConsumerConfig(eventConsumerConfigDto);
         log.info("add: eventConsumerConfig={}", eventConsumerConfig);
