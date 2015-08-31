@@ -25,8 +25,16 @@ public class EventConsumerManager {
 
     public void registerAndStart(final EventConsumerConfig eventConsumerConfig) {
 
-        //FIXME: This should iterate through CEPEventConsumerFactories and check which is compatible
-        final EventConsumer eventConsumer = eventConsumerFactories.get(0).build(eventConsumerConfig);
+        EventConsumer eventConsumer = null;
+        for (final EventConsumerFactory eventConsumerFactory : eventConsumerFactories) {
+
+            eventConsumer = eventConsumerFactory.build(eventConsumerConfig);
+            if (eventConsumer != null)
+                break;
+        }
+
+        if (eventConsumer == null)
+            throw new IllegalArgumentException("No compatible builder for config of type " + eventConsumerConfig.getClass().getSimpleName());
 
         registeredConsumers.put(eventConsumerConfig.getEventConsumerId(), eventConsumer);
         eventConsumer.start();

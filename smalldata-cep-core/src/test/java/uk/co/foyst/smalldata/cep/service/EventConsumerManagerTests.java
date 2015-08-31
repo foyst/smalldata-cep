@@ -9,13 +9,15 @@ import uk.co.foyst.smalldata.cep.consumer.EventConsumer;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerConfig;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerId;
 import uk.co.foyst.smalldata.cep.consumer.factory.EventConsumerFactory;
+import uk.co.foyst.smalldata.cep.stub.StubEventConsumer;
+import uk.co.foyst.smalldata.cep.stub.StubEventConsumerConfig;
 
 import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -89,5 +91,40 @@ public class EventConsumerManagerTests {
 
         // Assert
         assertFalse(consumerIsStarted);
+    }
+
+    @Test
+    public void shouldBuildEventConsumerGivenCompatibleFactory() {
+
+        // Arrange
+        final String eventConsumerIdString = "c58d6063-7501-4584-b62a-763114055e05";
+        final EventConsumerId eventConsumerId = EventConsumerId.fromString(eventConsumerIdString);
+
+        final EventConsumerConfig eventConsumerConfig = new StubEventConsumerConfig(eventConsumerId);
+        final EventConsumer eventConsumer = new StubEventConsumer();
+        when(eventConsumerFactory.build(eventConsumerConfig)).thenReturn(eventConsumer);
+
+        // Act
+        eventConsumerManager.registerAndStart(eventConsumerConfig);
+
+        // Assert
+        assertTrue(eventConsumerManager.isStarted(eventConsumerId));
+    }
+
+    @Test
+    public void shouldThrowExceptionGivenNoCompatibleFactoriesForEventConsumerConfig() {
+
+        // Arrange
+        final EventConsumerConfig eventConsumerConfig = new StubEventConsumerConfig();
+        when(eventConsumerFactory.build(eventConsumerConfig)).thenReturn(null);
+
+        // Act
+        try {
+            eventConsumerManager.registerAndStart(eventConsumerConfig);
+            fail("Should throw IllegalArgumentException if no factories available");
+        } catch (IllegalArgumentException e) {
+            // Assert
+            assertEquals("No compatible builder for config of type StubEventConsumerConfig", e.getMessage());
+        }
     }
 }
