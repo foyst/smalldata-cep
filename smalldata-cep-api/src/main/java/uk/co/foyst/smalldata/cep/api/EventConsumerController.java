@@ -91,4 +91,18 @@ public class EventConsumerController {
         final EventConsumerConfigDto updatedEventConsumerConfigDto = abstractEventConsumerConfigDtoFactory.build(updatedEventConsumerConfig);
         return new ResponseEntity<>(updatedEventConsumerConfigDto, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/{key}/start", method = RequestMethod.POST)
+    public final ResponseEntity<Void> startConsumer(@PathVariable("key") final String eventConsumerIdString) {
+
+        eventConsumerService.startEventConsumer(EventConsumerId.fromString(eventConsumerIdString));
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{key}/stop", method = RequestMethod.POST)
+    public final ResponseEntity<Void> stopConsumer(@PathVariable("key") final String eventConsumerIdString) {
+
+        eventConsumerService.stopEventConsumer(EventConsumerId.fromString(eventConsumerIdString));
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
 }

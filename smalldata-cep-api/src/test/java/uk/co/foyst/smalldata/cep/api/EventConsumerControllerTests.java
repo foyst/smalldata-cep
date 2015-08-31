@@ -64,4 +64,40 @@ public class EventConsumerControllerTests {
         assertNotNull("EventConsumerId wasn't generated for new EventConsumer", actualConfigDto.getEventConsumerId());
         EventConsumerId.fromString(actualConfigDto.getEventConsumerId()); // Check String value can be parsed into a ScenarioId
     }
+
+    @Test
+    public void shouldStartEventConsumerGivenEventConsumerId() throws Exception {
+
+        // Arrange
+        final String eventConsumerIdString = "c58d6063-7501-4584-b62a-763114055e05";
+        final EventConsumerId eventConsumerId = EventConsumerId.fromString(eventConsumerIdString);
+        final String eventConsumerUri = "/" + eventConsumerIdString + "/start";
+
+        doNothing().when(eventConsumerService).startEventConsumer(eventConsumerId);
+
+        // Act
+        mockMvc.perform(post(API_LOCATION + eventConsumerUri))
+                // Assert
+                .andExpect(status().isOk());
+
+        verify(eventConsumerService, times(1)).startEventConsumer(eventConsumerId);
+    }
+
+    @Test
+    public void shouldStopEventConsumerGivenEventConsumerId() throws Exception {
+
+        // Arrange
+        final String eventConsumerIdString = "c58d6063-7501-4584-b62a-763114055e05";
+        final EventConsumerId eventConsumerId = EventConsumerId.fromString(eventConsumerIdString);
+        final String eventConsumerUri = "/" + eventConsumerIdString + "/stop";
+
+        doNothing().when(eventConsumerService).startEventConsumer(eventConsumerId);
+
+        // Act
+        mockMvc.perform(post(API_LOCATION + eventConsumerUri))
+                // Assert
+                .andExpect(status().isOk());
+
+        verify(eventConsumerService, times(1)).stopEventConsumer(eventConsumerId);
+    }
 }

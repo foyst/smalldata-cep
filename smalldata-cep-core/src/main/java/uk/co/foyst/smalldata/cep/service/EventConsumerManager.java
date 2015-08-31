@@ -35,6 +35,15 @@ public class EventConsumerManager {
     public boolean isStarted(EventConsumerId eventConsumerId) {
 
         final EventConsumer eventConsumer = registeredConsumers.get(eventConsumerId);
-        return eventConsumer.isStarted();
+        if (eventConsumer == null)
+            return false;
+        else
+            return eventConsumer.isStarted();
+    }
+
+    public void stopAndUnregister(final EventConsumerId eventConsumerId) {
+
+        registeredConsumers.get(eventConsumerId).stop();
+        registeredConsumers.remove(eventConsumerId);
     }
 }

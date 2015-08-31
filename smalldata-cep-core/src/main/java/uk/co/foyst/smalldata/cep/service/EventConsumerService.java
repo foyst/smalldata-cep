@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerConfig;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerId;
-import uk.co.foyst.smalldata.cep.service.EventConsumerConfigService;
-import uk.co.foyst.smalldata.cep.service.EventConsumerManager;
 
 import java.util.List;
 
@@ -29,17 +27,22 @@ public class EventConsumerService {
         return eventConsumerConfigService.read(eventConsumerId);
     }
 
-    public void startEventConsumer(final EventConsumerId eventConsumerId) {
-
-        final EventConsumerConfig eventConsumerConfig = eventConsumerConfigService.read(eventConsumerId);
-        eventConsumerManager.registerAndStart(eventConsumerConfig);
-    }
-
     public EventConsumerConfig create(EventConsumerConfig eventConsumerConfig) {
         return eventConsumerConfigService.create(eventConsumerConfig);
     }
 
     public EventConsumerConfig update(EventConsumerConfig eventConsumerConfig) {
         return eventConsumerConfigService.update(eventConsumerConfig);
+    }
+
+    public void startEventConsumer(final EventConsumerId eventConsumerId) {
+
+        final EventConsumerConfig eventConsumerConfig = eventConsumerConfigService.read(eventConsumerId);
+        eventConsumerManager.registerAndStart(eventConsumerConfig);
+    }
+
+    public void stopEventConsumer(final EventConsumerId eventConsumerId) {
+
+        eventConsumerManager.stopAndUnregister(eventConsumerId);
     }
 }
