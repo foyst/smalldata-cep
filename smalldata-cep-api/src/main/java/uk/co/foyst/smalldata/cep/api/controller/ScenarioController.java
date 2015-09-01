@@ -1,4 +1,4 @@
-package uk.co.foyst.smalldata.cep.api;
+package uk.co.foyst.smalldata.cep.api.controller;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -13,6 +13,8 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import uk.co.foyst.smalldata.cep.Scenario;
 import uk.co.foyst.smalldata.cep.ScenarioId;
+import uk.co.foyst.smalldata.cep.api.dto.ScenarioDto;
+import uk.co.foyst.smalldata.cep.api.dto.ScenarioDtoFactory;
 import uk.co.foyst.smalldata.cep.service.ScenarioService;
 
 import java.util.List;
