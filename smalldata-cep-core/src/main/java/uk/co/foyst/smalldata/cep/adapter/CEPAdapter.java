@@ -1,12 +1,12 @@
 package uk.co.foyst.smalldata.cep.adapter;
 
-import uk.co.foyst.smalldata.cep.OutputListener;
+import uk.co.foyst.smalldata.cep.CEPEventObserver;
 import uk.co.foyst.smalldata.cep.Scenario;
 import uk.co.foyst.smalldata.cep.Stream;
 
 public interface CEPAdapter {
 
-    void addStreamListener(final OutputListener listener);
+    void addStreamListener(final CEPEventObserver listener);
 
     void sendEvents(final Stream inputStream, final Object[][] events) throws InterruptedException;
 

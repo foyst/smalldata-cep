@@ -20,7 +20,7 @@ import org.wso2.siddhi.query.api.query.Query;
 import org.wso2.siddhi.query.compiler.SiddhiCompiler;
 import org.wso2.siddhi.query.compiler.exception.SiddhiParserException;
 import uk.co.foyst.smalldata.cep.CEPEvent;
-import uk.co.foyst.smalldata.cep.OutputListener;
+import uk.co.foyst.smalldata.cep.CEPEventObserver;
 import uk.co.foyst.smalldata.cep.Scenario;
 import uk.co.foyst.smalldata.cep.Stream;
 
@@ -39,7 +39,7 @@ public class SiddhiCEPAdapter implements CEPAdapter {
     protected final Multimap<Scenario, String> tables = HashMultimap.create();
 
     protected final List<String> scenarioIds = new ArrayList<>();
-    protected final List<OutputListener> listeners = new ArrayList<OutputListener>();
+    protected final List<CEPEventObserver> listeners = new ArrayList<CEPEventObserver>();
 
     @Autowired
     public SiddhiCEPAdapter(final SiddhiManager manager) {
@@ -69,7 +69,7 @@ public class SiddhiCEPAdapter implements CEPAdapter {
     }
 
     @Override
-    public void addStreamListener(final OutputListener listener) {
+    public void addStreamListener(final CEPEventObserver listener) {
 
         for (final String queryId : queries.values()) {
             addQueryCallback(queryId, listener);
@@ -78,7 +78,7 @@ public class SiddhiCEPAdapter implements CEPAdapter {
         listeners.add(listener);
     }
 
-    private void addQueryCallback(final String queryId, final OutputListener listener) {
+    private void addQueryCallback(final String queryId, final CEPEventObserver listener) {
 
         log.info("Defining listener for the query (id) : " + queryId);
 
@@ -238,7 +238,7 @@ public class SiddhiCEPAdapter implements CEPAdapter {
 
     protected void updateStreamListeners(final String queryId) {
 
-        for (final OutputListener listener : listeners) {
+        for (final CEPEventObserver listener : listeners) {
             addQueryCallback(queryId, listener);
         }
     }

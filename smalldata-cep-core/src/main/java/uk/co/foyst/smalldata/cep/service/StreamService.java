@@ -19,6 +19,7 @@ public class StreamService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private static final String NOT_EXISTS_MESSAGE = "Stream with Id '%s' does not exist.";
+    private static final String NAME_NOT_EXISTS_MESSAGE = "Stream with name '%s' does not exist.";
 
     private final StreamViewDao streamViewDao;
     private final StreamViewFactory streamViewFactory;
@@ -55,6 +56,15 @@ public class StreamService {
         final StreamView streamView = streamViewDao.findOne(streamId);
         if (streamView == null) {
             throw new EntityNotFoundException(String.format(NOT_EXISTS_MESSAGE, id.toString()));
+        }
+        return streamViewFactory.convertToStream(streamView);
+    }
+
+    public Stream readByName(final String streamName) {
+
+        final StreamView streamView = streamViewDao.findByName(streamName);
+        if (streamView == null) {
+            throw new EntityNotFoundException(String.format(NOT_EXISTS_MESSAGE, streamName));
         }
         return streamViewFactory.convertToStream(streamView);
     }
