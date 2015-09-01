@@ -1,4 +1,4 @@
-package uk.co.foyst.smalldata.cep.api;
+package uk.co.foyst.smalldata.cep.api.dto;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,13 +21,14 @@ public class AbstractEventConsumerConfigDtoFactory {
     public EventConsumerConfigDto build(final EventConsumerConfig eventConsumerConfig) {
 
         EventConsumerConfigDto eventConsumerConfigDto = null;
-        for (final EventConsumerConfigDtoFactory configDtoFactory : eventConsumerConfigDtoFactories)
-            if (configDtoFactory.compatibleWith(eventConsumerConfig)) {
-                eventConsumerConfigDto = configDtoFactory.build(eventConsumerConfig);
-                break;
-            }
+        for (final EventConsumerConfigDtoFactory configDtoFactory : eventConsumerConfigDtoFactories) {
 
-        if (eventConsumerConfig == null)
+            eventConsumerConfigDto = configDtoFactory.build(eventConsumerConfig);
+            if (eventConsumerConfigDto != null)
+                break;
+        }
+
+        if (eventConsumerConfigDto == null)
             throw new IllegalArgumentException("DtoFactory not found for Config Type: " + eventConsumerConfig.getClass().getSimpleName());
 
         return eventConsumerConfigDto;
@@ -45,11 +46,12 @@ public class AbstractEventConsumerConfigDtoFactory {
     public EventConsumerConfig convertToEventConsumerConfig(final EventConsumerConfigDto eventConsumerConfigDto) {
 
         EventConsumerConfig eventConsumerConfig = null;
-        for (final EventConsumerConfigDtoFactory configDtoFactory : eventConsumerConfigDtoFactories)
-            if (configDtoFactory.compatibleWith(eventConsumerConfigDto)) {
-                eventConsumerConfig = configDtoFactory.convertToEventConsumerConfig(eventConsumerConfigDto);
+        for (final EventConsumerConfigDtoFactory configDtoFactory : eventConsumerConfigDtoFactories) {
+
+            eventConsumerConfig = configDtoFactory.convertToEventConsumerConfig(eventConsumerConfigDto);
+            if (eventConsumerConfig != null)
                 break;
-            }
+        }
 
         if (eventConsumerConfig == null)
             throw new IllegalArgumentException("DtoFactory not found for Config Type: " + eventConsumerConfigDto.getClass().getSimpleName());

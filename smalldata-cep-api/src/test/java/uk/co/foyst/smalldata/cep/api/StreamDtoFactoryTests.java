@@ -3,6 +3,8 @@ package uk.co.foyst.smalldata.cep.api;
 import org.junit.Test;
 import uk.co.foyst.smalldata.cep.Stream;
 import uk.co.foyst.smalldata.cep.StreamId;
+import uk.co.foyst.smalldata.cep.api.dto.StreamDto;
+import uk.co.foyst.smalldata.cep.api.dto.StreamDtoFactory;
 
 import java.util.Arrays;
 import java.util.List;

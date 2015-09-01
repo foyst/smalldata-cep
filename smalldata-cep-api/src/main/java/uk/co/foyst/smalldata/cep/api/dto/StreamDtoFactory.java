@@ -1,4 +1,4 @@
-package uk.co.foyst.smalldata.cep.api;
+package uk.co.foyst.smalldata.cep.api.dto;
 
 import org.springframework.stereotype.Component;
 import uk.co.foyst.smalldata.cep.Stream;

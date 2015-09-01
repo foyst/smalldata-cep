@@ -1,4 +1,4 @@
-package uk.co.foyst.smalldata.cep.api;
+package uk.co.foyst.smalldata.cep.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;

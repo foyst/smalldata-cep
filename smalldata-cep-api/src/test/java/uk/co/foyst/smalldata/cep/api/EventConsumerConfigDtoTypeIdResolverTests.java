@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.junit.Before;
 import org.junit.Test;
+import uk.co.foyst.smalldata.cep.api.dto.EventConsumerConfigDto;
+import uk.co.foyst.smalldata.cep.api.dto.EventConsumerConfigDtoTypeIdResolver;
 
 import static org.junit.Assert.assertEquals;
 

@@ -7,6 +7,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.co.foyst.smalldata.cep.Stream;
 import uk.co.foyst.smalldata.cep.StreamId;
+import uk.co.foyst.smalldata.cep.api.dto.KafkaEventConsumerConfigDto;
+import uk.co.foyst.smalldata.cep.api.dto.KafkaEventConsumerConfigDtoFactory;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerId;
 import uk.co.foyst.smalldata.cep.consumer.KafkaEventConsumerConfig;
 import uk.co.foyst.smalldata.cep.service.StreamService;

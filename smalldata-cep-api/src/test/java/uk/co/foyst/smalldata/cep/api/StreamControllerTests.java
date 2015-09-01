@@ -14,6 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.co.foyst.smalldata.cep.Stream;
 import uk.co.foyst.smalldata.cep.StreamId;
+import uk.co.foyst.smalldata.cep.api.controller.StreamController;
+import uk.co.foyst.smalldata.cep.api.dto.StreamDto;
+import uk.co.foyst.smalldata.cep.api.dto.StreamDtoFactory;
 import uk.co.foyst.smalldata.cep.service.StreamService;
 
 import static org.junit.Assert.assertNotNull;

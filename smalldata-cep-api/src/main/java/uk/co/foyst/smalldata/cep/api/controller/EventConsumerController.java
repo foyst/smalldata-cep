@@ -1,4 +1,4 @@
-package uk.co.foyst.smalldata.cep.api;
+package uk.co.foyst.smalldata.cep.api.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
+import uk.co.foyst.smalldata.cep.api.dto.AbstractEventConsumerConfigDtoFactory;
+import uk.co.foyst.smalldata.cep.api.dto.EventConsumerConfigDto;
+import uk.co.foyst.smalldata.cep.api.dto.EventConsumerConfigDtoArrayList;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerConfig;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerId;
 import uk.co.foyst.smalldata.cep.service.EventConsumerService;

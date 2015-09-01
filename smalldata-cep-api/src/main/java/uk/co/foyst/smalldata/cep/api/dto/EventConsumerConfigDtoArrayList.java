@@ -1,4 +1,4 @@
-package uk.co.foyst.smalldata.cep.api;
+package uk.co.foyst.smalldata.cep.api.dto;
 
 import java.util.ArrayList;
 import java.util.Collection;

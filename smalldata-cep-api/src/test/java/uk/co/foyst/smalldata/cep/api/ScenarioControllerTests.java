@@ -15,6 +15,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.co.foyst.smalldata.cep.Scenario;
 import uk.co.foyst.smalldata.cep.ScenarioId;
 import uk.co.foyst.smalldata.cep.StreamId;
+import uk.co.foyst.smalldata.cep.api.controller.ScenarioController;
+import uk.co.foyst.smalldata.cep.api.dto.ScenarioDto;
+import uk.co.foyst.smalldata.cep.api.dto.ScenarioDtoFactory;
 import uk.co.foyst.smalldata.cep.service.ScenarioService;
 
 import static org.junit.Assert.assertNotNull;

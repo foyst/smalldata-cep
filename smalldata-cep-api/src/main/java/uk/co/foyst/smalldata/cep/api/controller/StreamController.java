@@ -1,4 +1,4 @@
-package uk.co.foyst.smalldata.cep.api;
+package uk.co.foyst.smalldata.cep.api.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +12,8 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import uk.co.foyst.smalldata.cep.Stream;
 import uk.co.foyst.smalldata.cep.StreamId;
+import uk.co.foyst.smalldata.cep.api.dto.StreamDto;
+import uk.co.foyst.smalldata.cep.api.dto.StreamDtoFactory;
 import uk.co.foyst.smalldata.cep.service.StreamService;
 
 import java.util.List;

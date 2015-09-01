@@ -1,4 +1,4 @@
-package uk.co.foyst.smalldata.cep.api;
+package uk.co.foyst.smalldata.cep.api.dto;
 
 public class KafkaEventConsumerConfigDto extends EventConsumerConfigDto {
 
