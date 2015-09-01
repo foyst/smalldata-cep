@@ -5,14 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import uk.co.foyst.smalldata.cep.Stream;
-import uk.co.foyst.smalldata.cep.adapter.CEPAdapter;
-import uk.co.foyst.smalldata.cep.service.StreamService;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,12 +22,6 @@ public class RestEventConsumerControllerTests {
     private ObjectMapper objectMapper = new ObjectMapper();
     private MockMvc mockMvc;
 
-    @Mock
-    private CEPAdapter cepAdapter;
-
-    @Mock
-    private StreamService streamService;
-
     @InjectMocks
     private RestEventConsumerController eventConsumerController;
 
@@ -42,21 +32,22 @@ public class RestEventConsumerControllerTests {
     }
 
     @Test
-    public void shouldPassEventToCEPAdapter() throws Exception {
+    public void shouldPassEventToRestEventConsumer() throws Exception {
 
         // Arrange
         final Object[] eventAttributes = new Object[]{1234, 1, true, "SomeText"};
         final String event = objectMapper.writeValueAsString(eventAttributes);
         final String streamName = "testStream";
 
-        final Stream stream = mock(Stream.class);
-        eventConsumerController.registerEventConsumer(streamName, stream);
+        final RestEventConsumer restEventConsumer = mock(RestEventConsumer.class);
+        when(restEventConsumer.getInputStreamName()).thenReturn(streamName);
+        eventConsumerController.registerEventConsumer(restEventConsumer);
 
         // Act
         mockMvc.perform(post(API_LOCATION + "/" + streamName).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(event)).andExpect(status().isOk());
 
         // Assert
-        verify(cepAdapter, times(1)).sendEvent(stream, eventAttributes);
+        verify(restEventConsumer, times(1)).sendEvent(eventAttributes);
     }
 
 }
