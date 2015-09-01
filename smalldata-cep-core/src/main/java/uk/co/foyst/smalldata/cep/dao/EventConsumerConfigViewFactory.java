@@ -2,13 +2,15 @@ package uk.co.foyst.smalldata.cep.dao;
 
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerConfig;
 
-public interface EventConsumerConfigViewFactory {
+public abstract class EventConsumerConfigViewFactory {
 
-    EventConsumerConfigView build(final EventConsumerConfig eventConsumerConfig);
+    protected final StreamViewFactory streamViewFactory;
 
-    EventConsumerConfig convertToEventConsumerConfig(final EventConsumerConfigView eventConsumerConfigView);
+    public EventConsumerConfigViewFactory(StreamViewFactory streamViewFactory) {
+        this.streamViewFactory = streamViewFactory;
+    }
 
-    boolean compatibleWith(EventConsumerConfig eventConsumerConfig);
+    abstract EventConsumerConfigView build(final EventConsumerConfig eventConsumerConfig);
 
-    boolean compatibleWith(EventConsumerConfigView eventConsumerConfigView);
+    abstract EventConsumerConfig convertToEventConsumerConfig(final EventConsumerConfigView eventConsumerConfigView);
 }

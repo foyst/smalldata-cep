@@ -21,13 +21,14 @@ public class AbstractEventConsumerConfigViewFactory {
     public EventConsumerConfigView build(final EventConsumerConfig eventConsumerConfig) {
 
         EventConsumerConfigView eventConsumerConfigView = null;
-        for (final EventConsumerConfigViewFactory configViewFactory : eventConsumerConfigViewFactories)
-            if (configViewFactory.compatibleWith(eventConsumerConfig)) {
-                eventConsumerConfigView = configViewFactory.build(eventConsumerConfig);
-                break;
-            }
+        for (final EventConsumerConfigViewFactory configViewFactory : eventConsumerConfigViewFactories) {
 
-        if (eventConsumerConfig == null)
+            eventConsumerConfigView = configViewFactory.build(eventConsumerConfig);
+            if (eventConsumerConfigView != null)
+                break;
+        }
+
+        if (eventConsumerConfigView == null)
             throw new IllegalArgumentException("ViewFactory not found for Config Type: " + eventConsumerConfig.getClass().getSimpleName());
 
         return eventConsumerConfigView;
@@ -36,11 +37,12 @@ public class AbstractEventConsumerConfigViewFactory {
     public EventConsumerConfig convertToEventConsumerConfig(final EventConsumerConfigView eventConsumerConfigView) {
 
         EventConsumerConfig eventConsumerConfig = null;
-        for (final EventConsumerConfigViewFactory configViewFactory : eventConsumerConfigViewFactories)
-            if (configViewFactory.compatibleWith(eventConsumerConfigView)) {
-                eventConsumerConfig = configViewFactory.convertToEventConsumerConfig(eventConsumerConfigView);
+        for (final EventConsumerConfigViewFactory configViewFactory : eventConsumerConfigViewFactories) {
+
+            eventConsumerConfig = configViewFactory.convertToEventConsumerConfig(eventConsumerConfigView);
+            if (eventConsumerConfig != null)
                 break;
-            }
+        }
 
         if (eventConsumerConfig == null)
             throw new IllegalArgumentException("ViewFactory not found for Config Type: " + eventConsumerConfigView.getConsumerType());
