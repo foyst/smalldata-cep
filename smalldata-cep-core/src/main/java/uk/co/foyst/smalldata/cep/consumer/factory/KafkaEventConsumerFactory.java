@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.co.foyst.smalldata.cep.adapter.CEPAdapter;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumer;
+import uk.co.foyst.smalldata.cep.consumer.EventConsumerConfig;
 import uk.co.foyst.smalldata.cep.consumer.KafkaEventConsumer;
 import uk.co.foyst.smalldata.cep.consumer.KafkaEventConsumerConfig;
 
 import java.util.Properties;
 
 @Component
-public class KafkaEventConsumerFactory implements EventConsumerFactory<KafkaEventConsumerConfig> {
+public class KafkaEventConsumerFactory implements EventConsumerFactory {
 
     private final CEPAdapter cepAdapter;
 
@@ -23,18 +24,25 @@ public class KafkaEventConsumerFactory implements EventConsumerFactory<KafkaEven
     }
 
     @Override
-    public EventConsumer build(final KafkaEventConsumerConfig eventConsumerMetadata) {
+    public EventConsumer build(final EventConsumerConfig eventConsumerConfig) {
 
-        Properties props = new Properties();
-        props.put("zookeeper.connect", eventConsumerMetadata.getZookeeperUrl());
-        props.put("group.id", eventConsumerMetadata.getGroupId());
-        props.put("zookeeper.session.timeout.ms", "400");
-        props.put("zookeeper.sync.time.ms", "200");
-        props.put("auto.commit.interval.ms", "1000");
+        EventConsumer eventConsumer = null;
+        if (eventConsumerConfig instanceof KafkaEventConsumerConfig) {
 
-        final ConsumerConfig consumerConfig = new ConsumerConfig(props);
-        final ConsumerConnector consumer = Consumer.createJavaConsumerConnector(consumerConfig);
+            //TODO: Initialisation is spread between this Factory and the KafkaEventConsumer Constructor: consolidate
+            final KafkaEventConsumerConfig kafkaConfig = (KafkaEventConsumerConfig) eventConsumerConfig;
+            Properties props = new Properties();
+            props.put("zookeeper.connect", kafkaConfig.getZookeeperUrl());
+            props.put("group.id", kafkaConfig.getGroupId());
+            props.put("zookeeper.session.timeout.ms", "400");
+            props.put("zookeeper.sync.time.ms", "200");
+            props.put("auto.commit.interval.ms", "1000");
 
-        return new KafkaEventConsumer(eventConsumerMetadata, consumer, cepAdapter);
+            final ConsumerConfig consumerConfig = new ConsumerConfig(props);
+            final ConsumerConnector consumer = Consumer.createJavaConsumerConnector(consumerConfig);
+            eventConsumer = new KafkaEventConsumer(kafkaConfig, consumer, cepAdapter);
+        }
+
+        return eventConsumer;
     }
 }

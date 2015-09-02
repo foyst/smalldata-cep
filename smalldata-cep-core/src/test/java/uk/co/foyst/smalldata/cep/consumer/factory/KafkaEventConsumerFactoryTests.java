@@ -8,7 +8,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import uk.co.foyst.smalldata.cep.adapter.CEPAdapter;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumer;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerConfig;
-import uk.co.foyst.smalldata.cep.consumer.RestEventConsumerController;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -16,16 +15,13 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RestEventConsumerFactoryTests {
+public class KafkaEventConsumerFactoryTests {
 
     @Mock
     private CEPAdapter cepAdapter;
 
-    @Mock
-    private RestEventConsumerController restEventConsumerController;
-
     @InjectMocks
-    private RestEventConsumerFactory restEventConsumerFactory;
+    private KafkaEventConsumerFactory kafkaEventConsumerFactory;
 
     @Test
     public void shouldReturnNullGivenIncomptatibleEventConsumerConfig() {
@@ -34,7 +30,7 @@ public class RestEventConsumerFactoryTests {
         final EventConsumerConfig eventConsumerConfig = mock(EventConsumerConfig.class);
 
         // Act
-        final EventConsumer eventConsumer = restEventConsumerFactory.build(eventConsumerConfig);
+        final EventConsumer eventConsumer = kafkaEventConsumerFactory.build(eventConsumerConfig);
 
         // Assert
         assertThat(eventConsumer, is(nullValue()));
