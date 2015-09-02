@@ -19,10 +19,7 @@ import org.wso2.siddhi.query.api.definition.partition.PartitionDefinition;
 import org.wso2.siddhi.query.api.query.Query;
 import org.wso2.siddhi.query.compiler.SiddhiCompiler;
 import org.wso2.siddhi.query.compiler.exception.SiddhiParserException;
-import uk.co.foyst.smalldata.cep.CEPEvent;
-import uk.co.foyst.smalldata.cep.CEPEventObserver;
-import uk.co.foyst.smalldata.cep.Scenario;
-import uk.co.foyst.smalldata.cep.Stream;
+import uk.co.foyst.smalldata.cep.*;
 
 import java.util.*;
 
@@ -34,7 +31,7 @@ public class SiddhiCEPAdapter implements CEPAdapter {
     protected SiddhiManager manager;
 
     protected final Multimap<Scenario, String> queries = HashMultimap.create();
-    protected final HashSet<String> streams = new HashSet<>();
+    protected final HashMap<String, String> streams = new HashMap<>();
     protected final Multimap<Scenario, String> partitions = HashMultimap.create();
     protected final Multimap<Scenario, String> tables = HashMultimap.create();
 
@@ -51,7 +48,7 @@ public class SiddhiCEPAdapter implements CEPAdapter {
     public void define(final Stream stream) {
 
         final InputHandler handler = manager.defineStream(stream.getDefinition());
-        this.streams.add(stream.getStreamId().toString());
+        streams.put(stream.getStreamId().toString(), handler.getStreamId());
     }
 
     @Override
@@ -64,8 +61,10 @@ public class SiddhiCEPAdapter implements CEPAdapter {
     @Override
     public void remove(final Stream stream) {
 
-        manager.removeStream(stream.getStreamId().toString());
-        this.streams.remove(stream.toString());
+        final String streamIdString = stream.getStreamId().toString();
+        final String internalStreamId = streams.get(streamIdString);
+        manager.removeStream(internalStreamId);
+        streams.remove(streamIdString);
     }
 
     @Override
@@ -114,12 +113,8 @@ public class SiddhiCEPAdapter implements CEPAdapter {
     @Override
     public void sendEvent(final Stream stream, final Object[] event) throws InterruptedException {
 
-        final InputHandler inputHandler = manager.getInputHandler(stream.toString());
-
-        if (inputHandler == null) {
-            log.debug("Input stream not defined in the CEP : " + stream);
-        }
-
+        final String internalStreamId = this.streams.get(stream.getStreamId().toString());
+        final InputHandler inputHandler = manager.getInputHandler(internalStreamId);
         inputHandler.send(event);
     }
 
@@ -216,7 +211,7 @@ public class SiddhiCEPAdapter implements CEPAdapter {
                 log.debug("plan is a StreamDefinition: {}", plan);
                 final StreamDefinition streamDefinition = (StreamDefinition) plan;
                 final InputHandler handler = manager.defineStream(streamDefinition);
-                streams.add(handler.getStreamId());
+                streams.put(handler.getStreamId(), handler.getStreamId());
 
             } else if (plan instanceof TableDefinition) {
                 log.debug("plan is a TableDefinition: {}", plan);
