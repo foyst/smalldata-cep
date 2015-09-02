@@ -12,23 +12,12 @@ import java.util.HashMap;
 
 @Controller
 @RequestMapping(value = "/v1/restEventConsumer")
-public class RestEventConsumerController implements EventConsumer {
+public class RestEventConsumerController {
 
     private final HashMap<String, RestEventConsumer> registeredStreams;
 
     public RestEventConsumerController() {
         this.registeredStreams = new HashMap<>();
-    }
-
-    @Override
-    public void start() {}
-
-    @Override
-    public void stop() {}
-
-    @Override
-    public boolean isStarted() {
-        return true;
     }
 
     @RequestMapping(value = "/{streamName}", method = RequestMethod.POST)
@@ -41,7 +30,7 @@ public class RestEventConsumerController implements EventConsumer {
 
     public void registerEventConsumer(final RestEventConsumer restEventConsumer) {
 
-        final String streamName = restEventConsumer.getInputStreamName();
+        final String streamName = restEventConsumer.getInputStreamName().replace(" ", ""); //Remove whitespace from REST resource URI
         registeredStreams.put(streamName, restEventConsumer);
     }
 

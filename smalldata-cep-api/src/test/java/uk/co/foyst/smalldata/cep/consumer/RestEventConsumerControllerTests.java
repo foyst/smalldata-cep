@@ -50,4 +50,23 @@ public class RestEventConsumerControllerTests {
         verify(restEventConsumer, times(1)).sendEvent(eventAttributes);
     }
 
+    @Test
+    public void shouldMatchToEventConsumerGivenNameWithStrippedOutSpaces() throws Exception {
+
+        // Arrange
+        final Object[] eventAttributes = new Object[]{1234, 1, true, "SomeText"};
+        final String event = objectMapper.writeValueAsString(eventAttributes);
+        final String streamName = "Test Stream";
+
+        final RestEventConsumer restEventConsumer = mock(RestEventConsumer.class);
+        when(restEventConsumer.getInputStreamName()).thenReturn(streamName);
+        eventConsumerController.registerEventConsumer(restEventConsumer);
+
+        // Act
+        mockMvc.perform(post(API_LOCATION + "/" + "TestStream").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(event)).andExpect(status().isOk());
+
+        // Assert
+        verify(restEventConsumer, times(1)).sendEvent(eventAttributes);
+    }
+
 }
