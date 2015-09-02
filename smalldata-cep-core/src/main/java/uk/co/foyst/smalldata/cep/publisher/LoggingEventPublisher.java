@@ -2,8 +2,10 @@ package uk.co.foyst.smalldata.cep.publisher;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import uk.co.foyst.smalldata.cep.CEPEvent;
 
+@Component
 public class LoggingEventPublisher extends EventPublisher {
 
     private final Logger log = LoggerFactory.getLogger(LoggingEventPublisher.class);
@@ -12,6 +14,6 @@ public class LoggingEventPublisher extends EventPublisher {
     public void receive(final CEPEvent[] events) {
 
         for (final CEPEvent cepEvent : events)
-            log.info(cepEvent.toString());
+            log.debug("{} -> {} -> {}", cepEvent.getTimeStamp(), cepEvent.getStreamId(), cepEvent.getData());
     }
 }
