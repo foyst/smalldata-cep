@@ -55,7 +55,7 @@ public class EmbeddedJetty {
     private static WebApplicationContext buildContext() {
 
         context = new XmlWebApplicationContext();
-        context.setConfigLocation("classpath:cep-api-context.xml");
+        context.setConfigLocation("classpath:cep-runner-context.xml");
         context.getEnvironment().setDefaultProfiles("cep.persistent.hsqldb");
         return context;
     }
