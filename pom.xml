@@ -13,6 +13,7 @@
         <module>smalldata-cep-core</module>
         <module>smalldata-cep-api</module>
         <module>smalldata-cep-runner</module>
+        <module>smalldata-cep-publish-ws</module>
     </modules>
 
     <properties>

@@ -9,7 +9,7 @@
         </layout>
     </appender>
 
-    <logger name="uk.co.foyst.smalldata.cep.publisher.LoggingEventPublisher">
+    <logger name="uk.co.foyst.smalldata.cep.publisher.ws.LoggingEventPublisher">
         <level value="debug" />
     </logger>
 
