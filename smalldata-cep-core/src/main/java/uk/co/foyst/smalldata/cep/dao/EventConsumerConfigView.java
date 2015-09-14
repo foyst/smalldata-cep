@@ -14,6 +14,7 @@ public class EventConsumerConfigView implements Serializable {
     @Id
     private String eventConsumerId;
 
+    @ManyToOne(fetch = FetchType.EAGER)
     private StreamView streamView;
     // TODO: Make me an enum
     private String consumerType;
