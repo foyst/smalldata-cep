@@ -22,6 +22,7 @@ import uk.co.foyst.smalldata.cep.service.ScenarioService;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -67,5 +68,19 @@ public class ScenarioControllerTests {
         final ScenarioDto actualScenarioDto = argumentCaptor.getValue();
         assertNotNull("ScenarioId wasn't generated for new Scenario", actualScenarioDto.getScenarioId());
         StreamId.fromString(actualScenarioDto.getScenarioId()); // Check String value can be parsed into a ScenarioId
+    }
+
+    @Test
+    public void shouldDeleteScenarioGivenScenarioId() throws Exception {
+
+        // Arrange
+        final String scenarioIdString = "12b1c57e-baa0-49aa-bf4b-7ba86db5019c";
+        final ScenarioId scenarioId = ScenarioId.fromString(scenarioIdString);
+
+        // Act
+        mockMvc.perform(delete(API_LOCATION + "/" + scenarioIdString)).andExpect(status().isOk());
+
+        // Assert
+        verify(scenarioService, times(1)).delete(scenarioId);
     }
 }

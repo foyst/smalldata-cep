@@ -10,6 +10,7 @@ import uk.co.foyst.smalldata.cep.adapter.CEPAdapter;
 import uk.co.foyst.smalldata.cep.dao.ScenarioView;
 import uk.co.foyst.smalldata.cep.dao.ScenarioViewDao;
 import uk.co.foyst.smalldata.cep.dao.ScenarioViewFactory;
+import uk.co.foyst.smalldata.cep.exception.EntityNotFoundException;
 
 import java.util.List;
 
@@ -65,10 +66,7 @@ public class ScenarioService {
 
         scenarioValidator.verifyScenarioNameIsUnique(updatedScenario);
 
-        final ScenarioView currentScenarioView = scenarioViewDao.findOne(updatedScenario.getScenarioId().toString());
-        if (currentScenarioView == null) {
-            throw new Exception(String.format(NOT_EXISTS_MESSAGE, updatedScenario.getScenarioId().toString()));
-        }
+        checkExists(updatedScenario);
         cepAdapter.update(updatedScenario);
 
         final ScenarioView scenarioView = scenarioViewFactory.build(updatedScenario);
@@ -77,10 +75,24 @@ public class ScenarioService {
         return updatedScenario;
     }
 
-    public void delete(final Scenario scenario) throws Exception {
+    private ScenarioView checkExists(Scenario updatedScenario) throws Exception {
+        return checkExists(updatedScenario.getScenarioId());
+    }
 
-        cepAdapter.remove(scenario);
-        final ScenarioView scenarioView = scenarioViewFactory.build(scenario);
-        scenarioViewDao.delete(scenarioView);
+    private ScenarioView checkExists(final ScenarioId scenarioId) {
+
+        final ScenarioView currentScenarioView = scenarioViewDao.findOne(scenarioId.toString());
+        if (currentScenarioView == null) {
+            throw new EntityNotFoundException(String.format(NOT_EXISTS_MESSAGE, scenarioId.toString()));
+        }
+        return currentScenarioView;
+    }
+
+    public void delete(final ScenarioId scenarioId) throws Exception {
+
+        final ScenarioView viewToDelete = checkExists(scenarioId);
+        final Scenario scenarioToDelete = scenarioViewFactory.convertToDomainObject(viewToDelete);
+        cepAdapter.remove(scenarioToDelete);
+        scenarioViewDao.delete(viewToDelete);
     }
 }

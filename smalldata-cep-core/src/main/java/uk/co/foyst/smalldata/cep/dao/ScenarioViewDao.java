@@ -6,7 +6,5 @@ import java.util.List;
 
 public interface ScenarioViewDao extends JpaRepository<ScenarioView, String> {
 
-    ScenarioView findByScenarioId(final String scenarioId);
-
     List<ScenarioView> findAll();
 }

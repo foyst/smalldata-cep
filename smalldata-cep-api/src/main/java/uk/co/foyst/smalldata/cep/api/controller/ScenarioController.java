@@ -55,9 +55,8 @@ public class ScenarioController {
     public final ResponseEntity<ScenarioDto> getById(@PathVariable("key") final String scenarioId) throws Exception {
 
         final ScenarioId id = ScenarioId.fromString(scenarioId);
-        final Scenario resource = scenarioService.read(id);
-        Assert.notNull(resource, String.format(MISSING_SCEHARNIO_MESSAGE, scenarioId));
-        final ScenarioDto scenarioDto = scenarioDtoFactory.build(resource);
+        final Scenario scenario = scenarioService.read(id);
+        final ScenarioDto scenarioDto = scenarioDtoFactory.build(scenario);
         return new ResponseEntity<>(scenarioDto, HttpStatus.OK);
     }
 
@@ -104,5 +103,14 @@ public class ScenarioController {
 
         final ScenarioDto updatedScenarioDto = scenarioDtoFactory.build(updatedScenario);
         return new ResponseEntity<>(updatedScenarioDto, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{key}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public final ResponseEntity<Void> delete(@PathVariable("key") final String scenarioIdString) throws Exception {
+
+        final ScenarioId scenarioId = ScenarioId.fromString(scenarioIdString);
+        scenarioService.delete(scenarioId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
