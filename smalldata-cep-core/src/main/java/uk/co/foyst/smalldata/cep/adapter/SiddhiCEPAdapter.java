@@ -19,7 +19,10 @@ import org.wso2.siddhi.query.api.definition.partition.PartitionDefinition;
 import org.wso2.siddhi.query.api.query.Query;
 import org.wso2.siddhi.query.compiler.SiddhiCompiler;
 import org.wso2.siddhi.query.compiler.exception.SiddhiParserException;
-import uk.co.foyst.smalldata.cep.*;
+import uk.co.foyst.smalldata.cep.CEPEvent;
+import uk.co.foyst.smalldata.cep.CEPEventObserver;
+import uk.co.foyst.smalldata.cep.Scenario;
+import uk.co.foyst.smalldata.cep.Stream;
 
 import java.util.*;
 
@@ -35,7 +38,6 @@ public class SiddhiCEPAdapter implements CEPAdapter {
     protected final Multimap<Scenario, String> partitions = HashMultimap.create();
     protected final Multimap<Scenario, String> tables = HashMultimap.create();
 
-    protected final List<String> scenarioIds = new ArrayList<>();
     protected final List<CEPEventObserver> listeners = new ArrayList<CEPEventObserver>();
 
     @Autowired
@@ -77,15 +79,14 @@ public class SiddhiCEPAdapter implements CEPAdapter {
         listeners.add(listener);
     }
 
-    private void addQueryCallback(final String queryId, final CEPEventObserver listener) {
+    private void addQueryCallback(final String queryId, final CEPEventObserver cepEventObserver) {
 
-        log.info("Defining listener for the query (id) : " + queryId);
+        log.debug("Attaching QueryCallback {} to Query {}", cepEventObserver, queryId);
 
         manager.addCallback(queryId, new QueryCallback() {
             @Override
             public void receive(final long timeStamp, final Event[] inEvents, final Event[] removeEvents) {
-
-                listener.receive(convert(inEvents));
+                cepEventObserver.receive(convert(inEvents));
             }
         });
     }
@@ -103,7 +104,7 @@ public class SiddhiCEPAdapter implements CEPAdapter {
     }
 
     @Override
-    public void sendEvents(final Stream stream, final Object[][] events) throws InterruptedException {
+    public void sendEvents(final Stream stream, final Object[][] events) {
 
         for (final Object[] event : events) {
             sendEvent(stream, event);
@@ -111,11 +112,16 @@ public class SiddhiCEPAdapter implements CEPAdapter {
     }
 
     @Override
-    public void sendEvent(final Stream stream, final Object[] event) throws InterruptedException {
+    public void sendEvent(final Stream stream, final Object[] event) {
 
         final String internalStreamId = this.streams.get(stream.getStreamId().toString());
         final InputHandler inputHandler = manager.getInputHandler(internalStreamId);
-        inputHandler.send(event);
+        try {
+            inputHandler.send(event);
+        } catch (InterruptedException e) {
+            throw new CEPAdapterException(String.format("Exception attempting to send event %s to Stream %s", event,
+                    stream.getStreamId().toString()), e);
+        }
     }
 
     @Override
@@ -123,9 +129,66 @@ public class SiddhiCEPAdapter implements CEPAdapter {
 
         try {
             defineExecutionPlan(scenario);
+            //FIXME: Need to tidy up and verify thrown Exceptions (it's not just SiddhiParserExceptions that can be
+            //thrown here
         } catch (final SiddhiParserException ex) {
             remove(scenario);
             throw ex;
+        }
+    }
+
+    protected void defineExecutionPlan(final Scenario scenario) {
+
+        log.debug("defineExecutionPlan: scenario={}", scenario);
+
+        String queryDefinition = scenario.getDefinition();
+        final List<ExecutionPlan> executionPlanList = SiddhiCompiler.parse(queryDefinition);
+        log.trace("defineExecutionPlan: executionPlanList={}", executionPlanList);
+
+        for (final ExecutionPlan plan : executionPlanList) {
+            if (plan instanceof Query) {
+                defineQuery(scenario, plan);
+            } else if (plan instanceof StreamDefinition) {
+                defineQueryStream(plan);
+            } else if (plan instanceof TableDefinition) {
+                defineTable(scenario, plan);
+            } else if (plan instanceof PartitionDefinition) {
+                definePartition(scenario, plan);
+            } else {
+                throw new CEPAdapterException("Error parsing " + queryDefinition + ": Unknown ExecutionPlan Type found in query");
+            }
+        }
+
+        log.info("Scenario with Id '" + scenario.getScenarioId().toString() + "' successfully created");
+    }
+
+    private void definePartition(Scenario scenario, ExecutionPlan plan) {
+        log.debug("plan is a PartitionDefinition: {}", plan);
+        manager.definePartition(((PartitionDefinition) plan));
+        partitions.put(scenario, ((PartitionDefinition) plan).getPartitionId());
+    }
+
+    private void defineTable(Scenario scenario, ExecutionPlan plan) {
+        log.debug("plan is a TableDefinition: {}", plan);
+        manager.defineTable((TableDefinition) plan);
+        tables.put(scenario, ((TableDefinition) plan).getTableId());
+    }
+
+    private void defineQueryStream(ExecutionPlan plan) {
+        log.debug("plan is a StreamDefinition: {}", plan);
+        final StreamDefinition streamDefinition = (StreamDefinition) plan;
+        final InputHandler handler = manager.defineStream(streamDefinition);
+        streams.put(handler.getStreamId(), handler.getStreamId());
+    }
+
+    private void defineQuery(Scenario scenario, ExecutionPlan plan) {
+        log.debug("plan is a Query: {}", plan);
+        try {
+            final String queryId = manager.addQuery((Query) plan);
+            queries.put(scenario, queryId);
+            updateStreamListeners(queryId);
+        } catch (final QueryCreationException | DifferentDefinitionAlreadyExistException ex) {
+            throw new CEPAdapterException("Unable to create Scenario with Id '" + scenario.getScenarioId().toString() + "'", ex);
         }
     }
 
@@ -177,58 +240,6 @@ public class SiddhiCEPAdapter implements CEPAdapter {
             }
         }
         return false;
-    }
-
-    protected void defineExecutionPlan(final Scenario scenario) throws SiddhiParserException {
-
-        log.info("defineExecutionPlan: scenario={}", scenario);
-
-        String queryDefinition = scenario.getDefinition();
-        log.debug("defineExecutionPlan: scenarioId={}, queryDefinition={}", scenario.getScenarioId(), queryDefinition);
-
-        final List<ExecutionPlan> executionPlanList = SiddhiCompiler.parse(queryDefinition);
-        log.debug("defineExecutionPlan: executionPlanList={}", executionPlanList);
-
-        // TODO: Check - do the ExecutionPlans need to be in dependency order
-        // (i.e. trying to define a query before a partition that it relies on)
-        for (final ExecutionPlan plan : executionPlanList) {
-            if (plan instanceof Query) {
-                log.debug("plan is a Query: {}", plan);
-                try {
-                    log.trace("output stream is: {}", ((Query) plan).getSelector().getSelectionList());
-                    final String queryId = manager.addQuery((Query) plan);
-                    queries.put(scenario, queryId);
-                    updateStreamListeners(queryId);
-                } catch (final QueryCreationException ex) {
-                    throw new SiddhiParserException("Error parsing : " + queryDefinition, ex);
-                } catch (final DifferentDefinitionAlreadyExistException e) {
-
-                    throw new SiddhiParserException("A Different Stream Definition already exists. Common causes of this are: \n "
-                            + "1: The Select fields don't match the stream in your defined output stream \n "
-                            + "2: The datatypes between your output stream and your Select fields don't match", e);
-                }
-            } else if (plan instanceof StreamDefinition) {
-                log.debug("plan is a StreamDefinition: {}", plan);
-                final StreamDefinition streamDefinition = (StreamDefinition) plan;
-                final InputHandler handler = manager.defineStream(streamDefinition);
-                streams.put(handler.getStreamId(), handler.getStreamId());
-
-            } else if (plan instanceof TableDefinition) {
-                log.debug("plan is a TableDefinition: {}", plan);
-                manager.defineTable((TableDefinition) plan);
-                tables.put(scenario, ((TableDefinition) plan).getTableId());
-
-            } else if (plan instanceof PartitionDefinition) {
-                log.debug("plan is a PartitionDefinition: {}", plan);
-                manager.definePartition(((PartitionDefinition) plan));
-                partitions.put(scenario, ((PartitionDefinition) plan).getPartitionId());
-
-            } else {
-                throw new SiddhiParserException("Error parsing " + queryDefinition + ": Unknown ExecutionPlan Type found in query");
-            }
-        }
-
-        log.info("defineExecutionPlan: queries={}, streams={}, tables={}, paritions={}", queries, streams, tables, partitions);
     }
 
     protected void updateStreamListeners(final String queryId) {

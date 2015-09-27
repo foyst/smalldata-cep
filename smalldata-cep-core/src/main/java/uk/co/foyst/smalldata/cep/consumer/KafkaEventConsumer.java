@@ -5,6 +5,7 @@ import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
 import uk.co.foyst.smalldata.cep.Stream;
 import uk.co.foyst.smalldata.cep.adapter.CEPAdapter;
+import uk.co.foyst.smalldata.cep.adapter.CEPAdapterException;
 import uk.co.foyst.smalldata.cep.consumer.transformer.InboundEventTransformer;
 import uk.co.foyst.smalldata.cep.consumer.transformer.UnescapedStringArrayInboundEventTransformer;
 
@@ -101,7 +102,7 @@ public class KafkaEventConsumer implements EventConsumer {
             while (it.hasNext())
                 try {
                     cepAdapter.sendEvent(inputStream, eventTransformer.convertToObjectArray(it.next().message()));
-                } catch (InterruptedException e) {
+                } catch (CEPAdapterException e) {
                     e.printStackTrace();
                 }
             System.out.println("Shutting down Thread: " + threadNumber);

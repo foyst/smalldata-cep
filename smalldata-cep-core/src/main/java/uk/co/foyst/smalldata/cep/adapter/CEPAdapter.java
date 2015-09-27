@@ -8,9 +8,9 @@ public interface CEPAdapter {
 
     void addStreamListener(final CEPEventObserver listener);
 
-    void sendEvents(final Stream inputStream, final Object[][] events) throws InterruptedException;
+    void sendEvents(final Stream inputStream, final Object[][] events);
 
-    void sendEvent(final Stream inputStream, final Object[] event) throws InterruptedException;
+    void sendEvent(final Stream inputStream, final Object[] event);
 
     void define(final Scenario scenario);
 
