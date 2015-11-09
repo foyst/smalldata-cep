@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class WebSocketEventPublisher extends EventPublisher {
 
     private SimpMessagingTemplate template;
-    private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss,SSS");
+    private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss,SSS").withZoneUTC();
 
     @Autowired
     public WebSocketEventPublisher(SimpMessagingTemplate template) {
