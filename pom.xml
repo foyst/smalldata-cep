@@ -86,4 +86,12 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>wso2</id>
+            <name>wso2</name>
+            <url>http://dist.wso2.org/maven2/</url>
+        </repository>
+    </repositories>
+
 </project>
