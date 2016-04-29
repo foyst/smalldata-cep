@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 public class UnescapedStringArrayInboundEventTransformerTests {
 
-    final UnescapedStringArrayInboundEventTransformer eventTransformer = new UnescapedStringArrayInboundEventTransformer();
+    final InboundEventTransformer eventTransformer = new UnescapedStringArrayInboundEventTransformer();
 
     @Test
     public void shouldTransformGivenStringAndIntegerArrayValues() {
