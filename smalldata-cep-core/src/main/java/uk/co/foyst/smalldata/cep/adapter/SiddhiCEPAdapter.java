@@ -114,6 +114,7 @@ public class SiddhiCEPAdapter implements CEPAdapter {
     @Override
     public void sendEvent(final Stream stream, final Object[] event) {
 
+        log.debug("Event received for CEP Processing in Stream \"{}\": {}", stream.getName(), event);
         final String internalStreamId = this.streams.get(stream.getStreamId().toString());
         final InputHandler inputHandler = manager.getInputHandler(internalStreamId);
         try {
