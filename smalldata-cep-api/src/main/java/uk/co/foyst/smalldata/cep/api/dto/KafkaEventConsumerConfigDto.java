@@ -5,12 +5,15 @@ public class KafkaEventConsumerConfigDto extends EventConsumerConfigDto {
     private String zookeeperUrl;
     private String topic;
     private String groupId;
+    private String messageTransformer;
 
     public KafkaEventConsumerConfigDto() {}
 
-    public KafkaEventConsumerConfigDto(final String eventConsumerId, final String streamId, final String zookeeperUrl, final String groupId, final String topic) {
+    public KafkaEventConsumerConfigDto(final String eventConsumerId, final String streamId, final String zookeeperUrl, final String groupId,
+                                       final String topic, final String messageTransformer) {
         super(eventConsumerId, streamId);
 
+        this.messageTransformer = messageTransformer;
         this.groupId = groupId;
         this.topic = topic;
         this.zookeeperUrl = zookeeperUrl;
@@ -20,23 +23,15 @@ public class KafkaEventConsumerConfigDto extends EventConsumerConfigDto {
         return zookeeperUrl;
     }
 
-    public void setZookeeperUrl(String zookeeperUrl) {
-        this.zookeeperUrl = zookeeperUrl;
-    }
-
     public String getTopic() {
         return topic;
-    }
-
-    public void setTopic(String topic) {
-        this.topic = topic;
     }
 
     public String getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
+    public String getMessageTransformer() {
+        return messageTransformer;
     }
 }

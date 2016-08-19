@@ -24,15 +24,16 @@ public class KafkaEventConsumer implements EventConsumer {
     private final String topic;
     private final int numThreads;
     private final Stream inputStream;
-    private final InboundEventTransformer eventTransformer = new UnescapedStringArrayInboundEventTransformer(); //TODO: Push into dynamic configuration
+    private final InboundEventTransformer eventTransformer;
 
     private ExecutorService executor;
     private boolean started;
 
-    public KafkaEventConsumer(KafkaEventConsumerConfig config, ConsumerConnector consumer, CEPAdapter cepAdapter) {
+    public KafkaEventConsumer(KafkaEventConsumerConfig config, ConsumerConnector consumer, final InboundEventTransformer inboundEventTransformer, CEPAdapter cepAdapter) {
 
         this.eventConsumerId = config.getEventConsumerId();
         this.consumer = consumer;
+        this.eventTransformer = inboundEventTransformer;
         this.cepAdapter = cepAdapter;
         // TODO: Push stripping out of config class into builder pattern
         this.topic = config.getTopic();

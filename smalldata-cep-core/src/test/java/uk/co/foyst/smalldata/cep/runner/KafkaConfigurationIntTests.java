@@ -11,6 +11,7 @@ import uk.co.foyst.smalldata.cep.Stream;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerConfig;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerId;
 import uk.co.foyst.smalldata.cep.consumer.KafkaEventConsumerConfig;
+import uk.co.foyst.smalldata.cep.consumer.MessageTransformer;
 import uk.co.foyst.smalldata.cep.service.EventConsumerManager;
 import uk.co.foyst.smalldata.cep.service.StreamService;
 import uk.co.foyst.smalldata.cep.testfactory.StreamTestFactory;
@@ -37,7 +38,7 @@ public class KafkaConfigurationIntTests {
         streamService.add(testStream);
 
         final EventConsumerId eventConsumerId = new EventConsumerId();
-        EventConsumerConfig kafkaConsumerConfig = new KafkaEventConsumerConfig(eventConsumerId, testStream, "localhost:8080", "foyst.smalldata", "radarEvents");
+        EventConsumerConfig kafkaConsumerConfig = new KafkaEventConsumerConfig(eventConsumerId, testStream, "localhost:8080", "foyst.smalldata", "radarEvents", MessageTransformer.ORDERED_JSON);
 
         // Act
         cepEventConsumerManager.registerAndStart(kafkaConsumerConfig);

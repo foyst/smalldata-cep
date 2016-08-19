@@ -9,6 +9,7 @@ import uk.co.foyst.smalldata.cep.Stream;
 import uk.co.foyst.smalldata.cep.StreamId;
 import uk.co.foyst.smalldata.cep.api.dto.KafkaEventConsumerConfigDto;
 import uk.co.foyst.smalldata.cep.api.dto.KafkaEventConsumerConfigDtoFactory;
+import uk.co.foyst.smalldata.cep.consumer.MessageTransformer;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerId;
 import uk.co.foyst.smalldata.cep.consumer.KafkaEventConsumerConfig;
 import uk.co.foyst.smalldata.cep.service.StreamService;
@@ -35,7 +36,8 @@ public class KafkaEventConsumerConfigDtoFactoryTests {
         final String zookeeperUrl = "http://localhost:6667/zk";
         final String groupId = "TestGroup";
         final String topic = "warningEventTopic";
-        final KafkaEventConsumerConfig eventConsumerConfig = new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic);
+        final MessageTransformer messageTransformer = MessageTransformer.ORDERED_JSON;
+        final KafkaEventConsumerConfig eventConsumerConfig = new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic, messageTransformer);
 
         // Act
         final KafkaEventConsumerConfigDto eventConsumerConfigDto = (KafkaEventConsumerConfigDto) dtoFactory.build(eventConsumerConfig);
@@ -67,7 +69,8 @@ public class KafkaEventConsumerConfigDtoFactoryTests {
         final String zookeeperUrl = "http://localhost:6667/zk";
         final String groupId = "TestGroup";
         final String topic = "warningEventTopic";
-        final KafkaEventConsumerConfigDto eventConsumerConfigDto = new KafkaEventConsumerConfigDto(eventConsumerIdString, streamIdString, zookeeperUrl, groupId, topic);
+        final String messageTransformer = "ORDERED_JSON";
+        final KafkaEventConsumerConfigDto eventConsumerConfigDto = new KafkaEventConsumerConfigDto(eventConsumerIdString, streamIdString, zookeeperUrl, groupId, topic, messageTransformer);
         final Stream stream = buildTestStream();
         when(streamService.read(stream.getStreamId())).thenReturn(stream);
 

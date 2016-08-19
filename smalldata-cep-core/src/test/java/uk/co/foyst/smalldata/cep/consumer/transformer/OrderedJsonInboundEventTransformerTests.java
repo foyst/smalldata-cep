@@ -3,6 +3,8 @@ package uk.co.foyst.smalldata.cep.consumer.transformer;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.collection.IsArrayWithSize.arrayWithSize;
 
 public class OrderedJsonInboundEventTransformerTests {
 
@@ -50,5 +52,21 @@ public class OrderedJsonInboundEventTransformerTests {
 
         // Assert
         assertEquals(null, response[0]);
+    }
+
+    @Test
+    public void shouldHandleNestedFieldsByFlattening() {
+
+        // Arrange
+        final String pointScoredMessage = "{\"source\":\"Feed\",\"server\":\"HOME\",\"eventId\":\"c4d45f8a-4e91-34b3-891a-1870912a7332\",\"version\":0.24,\"eventElementType\":\"PointScored\"," +
+                "\"pointType\":\"None\",\"metadata\":{\"createdService\":\"i-man\",\"createdDate\":\"2016-08-19T04:45:07.920\"},\"correlationId\":\"113ca229-b020-48be-a5f6-fa572c23dd00\"," +
+                "\"scoredBy\":\"AWAY\",\"sequenceNumber\":263}";
+        final byte[] pointScoredMessageBytes = pointScoredMessage.getBytes();
+
+        final Object[] response = eventTransformer.convertToObjectArray(pointScoredMessageBytes);
+
+        assertThat(response, arrayWithSize(11));
+        assertEquals("i-man", response[6]);
+        assertEquals("2016-08-19T04:45:07.920", response[7]);
     }
 }

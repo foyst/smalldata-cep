@@ -7,6 +7,7 @@ import uk.co.foyst.smalldata.cep.StreamId;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerConfig;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerId;
 import uk.co.foyst.smalldata.cep.consumer.KafkaEventConsumerConfig;
+import uk.co.foyst.smalldata.cep.consumer.MessageTransformer;
 import uk.co.foyst.smalldata.cep.service.StreamService;
 
 @Component
@@ -31,7 +32,8 @@ public class KafkaEventConsumerConfigDtoFactory implements EventConsumerConfigDt
             final String groupId = kafkaEventConsumerConfig.getGroupId();
             final String topic = kafkaEventConsumerConfig.getTopic();
             final String zookeeperUrl = kafkaEventConsumerConfig.getZookeeperUrl();
-            consumerConfigDto = new KafkaEventConsumerConfigDto(eventConsumerConfig.getEventConsumerId().toString(), streamId, zookeeperUrl, groupId, topic);
+            final String messageTransformer = "orderedJson";
+            consumerConfigDto = new KafkaEventConsumerConfigDto(eventConsumerConfig.getEventConsumerId().toString(), streamId, zookeeperUrl, groupId, topic, messageTransformer);
         }
 
         return consumerConfigDto;
@@ -49,7 +51,8 @@ public class KafkaEventConsumerConfigDtoFactory implements EventConsumerConfigDt
             final String zookeeperUrl = kafkaEventConsumerConfigDto.getZookeeperUrl();
             final String groupId = kafkaEventConsumerConfigDto.getGroupId();
             final String topic = kafkaEventConsumerConfigDto.getTopic();
-            consumerConfig = new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic);
+            final MessageTransformer messageTransformer = MessageTransformer.valueOf(kafkaEventConsumerConfigDto.getMessageTransformer());
+            consumerConfig = new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic, messageTransformer);
         }
 
         return consumerConfig;

@@ -6,6 +6,7 @@ import uk.co.foyst.smalldata.cep.Stream;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerConfig;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerId;
 import uk.co.foyst.smalldata.cep.consumer.KafkaEventConsumerConfig;
+import uk.co.foyst.smalldata.cep.consumer.MessageTransformer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ public class KafkaEventConsumerConfigViewFactory extends EventConsumerConfigView
     private static final String ZOOKEEPER_URL_KEY = "zookeeperUrl";
     private static final String GROUP_ID_KEY = "groupId";
     private static final String TOPIC_KEY = "topic";
+    private static final String MESSAGE_TRANSFORMER_KEY = "messageTransformer";
 
     @Autowired
     public KafkaEventConsumerConfigViewFactory(StreamViewFactory streamViewFactory) {
@@ -35,6 +37,7 @@ public class KafkaEventConsumerConfigViewFactory extends EventConsumerConfigView
             kafkaConfigProperties.put(GROUP_ID_KEY, kafkaEventConsumerConfig.getGroupId());
             kafkaConfigProperties.put(TOPIC_KEY, kafkaEventConsumerConfig.getTopic());
             kafkaConfigProperties.put(ZOOKEEPER_URL_KEY, kafkaEventConsumerConfig.getZookeeperUrl());
+            kafkaConfigProperties.put(MESSAGE_TRANSFORMER_KEY, kafkaEventConsumerConfig.getMessageTransformer().toString());
 
             eventConsumerConfigView = new EventConsumerConfigView(eventConsumerConfig.getEventConsumerId().toString(), streamView, KAFKA_CONSUMER_TYPE, kafkaConfigProperties);
         }
@@ -52,7 +55,8 @@ public class KafkaEventConsumerConfigViewFactory extends EventConsumerConfigView
             String zookeeperUrl = configProperties.get(ZOOKEEPER_URL_KEY);
             String groupId = configProperties.get(GROUP_ID_KEY);
             String topic = configProperties.get(TOPIC_KEY);
-            eventConsumerConfig = new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic);
+            MessageTransformer messageTransformer = MessageTransformer.valueOf(configProperties.get("messageTransformer"));
+            eventConsumerConfig = new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic, messageTransformer);
         }
         return eventConsumerConfig;
     }

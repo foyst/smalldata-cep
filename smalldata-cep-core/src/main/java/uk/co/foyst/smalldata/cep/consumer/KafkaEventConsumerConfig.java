@@ -8,15 +8,17 @@ public class KafkaEventConsumerConfig extends EventConsumerConfig {
     private final int poolSize;
     private final String zookeeperUrl;
     private final String groupId;
+    private final MessageTransformer messageTransformer;
 
     public KafkaEventConsumerConfig(final EventConsumerId eventConsumerId, final Stream inputStream, final String zookeeperUrl, final String groupId,
-                                    final String topic) {
+                                    final String topic, MessageTransformer messageTransformer) {
 
         super(eventConsumerId, inputStream);
         this.zookeeperUrl = zookeeperUrl;
         this.groupId = groupId;
         this.topic = topic;
         this.poolSize = 5; //Fixed, for now
+        this.messageTransformer = messageTransformer;
     }
 
     public String getTopic() {
@@ -33,5 +35,9 @@ public class KafkaEventConsumerConfig extends EventConsumerConfig {
 
     public String getGroupId() {
         return groupId;
+    }
+
+    public MessageTransformer getMessageTransformer() {
+        return messageTransformer;
     }
 }

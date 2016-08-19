@@ -22,6 +22,7 @@ public class EventConsumerConfigViewTestFactory {
         kafkaConfigProperties.put("groupId", groupId);
         kafkaConfigProperties.put("topic", topic);
         kafkaConfigProperties.put("poolSize", poolSize.toString());
+        kafkaConfigProperties.put("messageTransformer", "ORDERED_JSON");
 
         final StreamView streamView = StreamViewTestFactory.buildTestInputStream();
 

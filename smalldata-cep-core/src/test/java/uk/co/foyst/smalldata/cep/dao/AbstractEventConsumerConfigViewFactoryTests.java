@@ -6,6 +6,7 @@ import uk.co.foyst.smalldata.cep.Stream;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerConfig;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerId;
 import uk.co.foyst.smalldata.cep.consumer.KafkaEventConsumerConfig;
+import uk.co.foyst.smalldata.cep.consumer.MessageTransformer;
 import uk.co.foyst.smalldata.cep.testfactory.EventConsumerConfigViewTestFactory;
 import uk.co.foyst.smalldata.cep.testfactory.StreamTestFactory;
 
@@ -37,7 +38,8 @@ public class AbstractEventConsumerConfigViewFactoryTests {
         final String zookeeperUrl = "localhost:8080";
         final String groupId = "testGroup";
         final String topic = "testTopic";
-        final EventConsumerConfig eventConsumerConfig = new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic);
+        final MessageTransformer messageTransformer = MessageTransformer.ORDERED_JSON;
+        final EventConsumerConfig eventConsumerConfig = new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic, messageTransformer);
 
         // Act
         final EventConsumerConfigView consumerConfigView = abstractEventConsumerConfigViewFactory.build(eventConsumerConfig);
@@ -52,6 +54,7 @@ public class AbstractEventConsumerConfigViewFactoryTests {
         assertEquals(zookeeperUrl, consumerConfigView.getConfigProperties().get("zookeeperUrl"));
         assertEquals(groupId, consumerConfigView.getConfigProperties().get("groupId"));
         assertEquals(topic, consumerConfigView.getConfigProperties().get("topic"));
+        assertEquals(messageTransformer.toString(), consumerConfigView.getConfigProperties().get("messageTransformer"));
     }
 
     @Test

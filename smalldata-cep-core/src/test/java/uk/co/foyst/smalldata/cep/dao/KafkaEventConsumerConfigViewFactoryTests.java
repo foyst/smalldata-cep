@@ -6,6 +6,7 @@ import uk.co.foyst.smalldata.cep.Stream;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerConfig;
 import uk.co.foyst.smalldata.cep.consumer.EventConsumerId;
 import uk.co.foyst.smalldata.cep.consumer.KafkaEventConsumerConfig;
+import uk.co.foyst.smalldata.cep.consumer.MessageTransformer;
 import uk.co.foyst.smalldata.cep.testfactory.EventConsumerConfigViewTestFactory;
 import uk.co.foyst.smalldata.cep.testfactory.StreamTestFactory;
 
@@ -36,7 +37,8 @@ public class KafkaEventConsumerConfigViewFactoryTests {
         final String zookeeperUrl = "localhost:2821";
         final String groupId = "TestGroupId";
         final String topic = "TestTopic";
-        final EventConsumerConfig kafkaEventConsumerConfig = new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic);
+        final MessageTransformer messageTransformer = MessageTransformer.ORDERED_JSON;
+        final EventConsumerConfig kafkaEventConsumerConfig = new KafkaEventConsumerConfig(eventConsumerId, inputStream, zookeeperUrl, groupId, topic, messageTransformer);
 
         // Act
         final EventConsumerConfigView eventConsumerConfigView = viewFactory.build(kafkaEventConsumerConfig);
@@ -47,6 +49,7 @@ public class KafkaEventConsumerConfigViewFactoryTests {
         assertEquals(zookeeperUrl, eventConsumerConfigView.getConfigProperties().get("zookeeperUrl"));
         assertEquals(groupId, eventConsumerConfigView.getConfigProperties().get("groupId"));
         assertEquals(topic, eventConsumerConfigView.getConfigProperties().get("topic"));
+        assertEquals("ORDERED_JSON", eventConsumerConfigView.getConfigProperties().get("messageTransformer"));
     }
 
     @Test
@@ -81,5 +84,6 @@ public class KafkaEventConsumerConfigViewFactoryTests {
         assertEquals(eventConsumerConfigView.getConfigProperties().get("groupId"), consumerConfig.getGroupId());
         assertEquals(eventConsumerConfigView.getConfigProperties().get("topic"), consumerConfig.getTopic());
         assertEquals(eventConsumerConfigView.getConfigProperties().get("poolSize"), consumerConfig.getPoolSize().toString());
+        assertEquals(MessageTransformer.ORDERED_JSON, consumerConfig.getMessageTransformer());
     }
 }
