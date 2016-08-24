@@ -37,7 +37,7 @@ public class WebSocketEventPublisherTests {
         final ArgumentCaptor<Object> objectArgumentCaptor = ArgumentCaptor.forClass(Object.class);
         verify(messagingTemplate, times(1)).convertAndSend(eq("/v1/topic"), objectArgumentCaptor.capture());
         final String actualPayload = (String) objectArgumentCaptor.getValue();
-        final String expectedPayload = "1970-01-01 00:00:12,345 - TestStream: [John, true, 321]";
+        final String expectedPayload = "{\"timestamp\": \"1970-01-01 00:00:12,345\", \"streamId\": \"TestStream\", \"eventData\": \"[John, true, 321]\"}";
         assertEquals(expectedPayload, actualPayload);
     }
 }
