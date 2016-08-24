@@ -26,7 +26,8 @@ public class WebSocketEventPublisher extends EventPublisher {
     public void receive(CEPEvent[] events) {
 
         for (final CEPEvent cepEvent : events) {
-            template.convertAndSend("/v1/topic", String.format("%s - %s: %s", TIMESTAMP_FORMAT.print(new DateTime(cepEvent.getTimeStamp())), cepEvent.getStreamId(), Arrays.toString(cepEvent.getData())));
+
+            template.convertAndSend("/v1/topic", String.format("{\"timestamp\": \"%s\", \"streamId\": \"%s\", \"eventData\": \"%s\"}", TIMESTAMP_FORMAT.print(new DateTime(cepEvent.getTimeStamp())), cepEvent.getStreamId(), Arrays.toString(cepEvent.getData())));
         }
     }
 }
